@@ -1,0 +1,24 @@
+import serial
+import time
+
+SERIAL_DEVICE = "/dev/ttyS0"  # 사용 중인 포트에 맞게 변경
+BAUDRATE = 9600
+
+def send_uart_message():
+    try:
+        ser = serial.Serial(SERIAL_DEVICE, BAUDRATE, timeout=1)
+        message = "#S1234*"
+        
+        while True:
+            ser.write(message.encode())  # 문자열을 바이트로 변환 후 전송
+            print(f"Sent: {message}")
+            time.sleep(1)  # 1초 대기
+            
+    except serial.SerialException as e:
+        print(f"Serial error: {e}")
+    finally:
+        if ser:
+            ser.close()
+
+if __name__ == "__main__":
+    send_uart_message()
