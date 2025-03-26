@@ -1,0 +1,37 @@
+import serial
+import time
+
+SERIAL_DEVICE = "/dev/ttyS0" 
+BAUDRATE = 9600
+
+def send_uart_message():
+    try:
+        ser = serial.Serial(SERIAL_DEVICE, BAUDRATE, timeout=1)
+        
+        message = "#S1234*"
+        
+        prefix = message[:2]  # "#S"
+        data = message[2:-1]  # "1234"
+        suffix = message[-1]  # "*"
+        
+        while True:
+            ser.write(prefix.encode())
+            print(f"Sent prefix: {prefix}")
+            time.sleep(0.3)  # 0.3초 대기
+            
+            ser.write(data.encode())
+            print(f"Sent data: {data}")
+            time.sleep(0.3)  # 0.3초 대기
+            
+            ser.write(suffix.encode())
+            print(f"Sent suffix: {suffix}")
+            time.sleep(1)  # 1초 대기
+            
+    except serial.SerialException as e:
+        print(f"Serial error: {e}")
+    finally:
+        if 'ser' in locals() and ser.is_open:
+            ser.close()
+
+if __name__ == "__main__":
+    send_uart_message()
